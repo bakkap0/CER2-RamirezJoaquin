@@ -4,24 +4,83 @@
 {% block title %}Eventos - SmartEvents{% endblock %}
 
 {% block content %}
-<section id="Eventos" class="row">
-    <div class="row row-cols-1 row-cols-md-3 g-3">
+<section id="Eventos" class="container"> {# Usa container para mejor padding y centrado #}
+
+    {# --- INICIO: Añadir bloque para mostrar mensajes --- #}
+    {% if messages %}
+        <div class="row mb-3">
+            <div class="col">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+    {# --- FIN: Añadir bloque para mostrar mensajes --- #}
+
+    <div class="row row-cols-1 row-cols-md-3 g-4"> {# g-4 para más espacio entre cards #}
 
         {% for evento in eventos %}
         <div class="col">
-            <div class="card h-100">
-                <img src="{{ evento.imagen.url }}" class="card-img-top" alt="{{ evento.titulo }}">
-                <div class="card-body">
-                    <a href="#" class="btn btn-primary">Inscribirse</a>
+            <div class="card h-100 shadow-sm"> {# h-100 para misma altura, shadow-sm para estética #}
+                {# Estilo para que todas las imágenes tengan una altura similar y se ajusten #}
+                <img src="{{ evento.imagen.url }}" class="card-img-top" alt="{{ evento.titulo }}" style="height: 200px; object-fit: cover;">
+                <div class="card-body d-flex flex-column"> {# d-flex flex-column para alinear el botón abajo #}
+                    <h5 class="card-title">{{ evento.titulo }}</h5>
+                    <p class="card-text">
+                        <small class="text-muted">
+                            {# Mostrar detalles del evento #}
+                            Fecha: {{ evento.fecha|date:"d M Y, H:i" }} hrs <br>
+                            Lugar: {{ evento.lugar }} <br>
+                            Cupos disponibles: {{ evento.cantidad }} <br>
+                            Valor: ${{ evento.valor }}
+                        </small>
+                    </p>
+
+                    {# --- INICIO: Lógica y Formulario de Inscripción --- #}
+                    <div class="mt-auto"> {# mt-auto empuja este div al final del card-body #}
+                        {% if user.is_authenticated %}
+                            {% if user in evento.asistentes.all %}
+                                {# Usuario ya inscrito #}
+                                <button class="btn btn-secondary w-100" disabled>Ya Inscrito</button>
+                            {% elif evento.cantidad <= 0 %}
+                                {# No quedan cupos #}
+                                <button class="btn btn-danger w-100" disabled>Sin Cupos</button>
+                            {% else %}
+                                {# Formulario para inscribirse (usa POST) #}
+                                <form action="{% url 'inscribir_evento' evento.id %}" method="post" class="d-grid"> {# d-grid hace que el botón ocupe todo el ancho #}
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-primary">Inscribirse</button>
+                                </form>
+                            {% endif %}
+                        {% else %}
+                            {# Usuario no autenticado #}
+                            <a href="{% url 'login' %}?next={% url 'eventos' %}" class="btn btn-outline-primary w-100">Iniciar sesión para inscribirse</a>
+                        {% endif %}
+                    </div>
+                    {# --- FIN: Lógica y Formulario de Inscripción --- #}
+
                 </div>
+                {# Verifica si hay fecha antes de mostrar el contador #}
+                {% if evento.fecha %}
                 <div class="card-footer">
-                    <div class="contador-evento" 
-                         data-fecha-evento="{{ evento.fecha_hora|date:'c' }}">
+                    {# Asegúrate que el data attribute usa 'evento.fecha' #}
+                    <div class="contador-evento"
+                         data-fecha-evento="{{ evento.fecha|date:'c' }}">
                         Cargando contador...
                     </div>
                 </div>
+                {% endif %}
             </div>
         </div>
+        {% empty %}
+            {# Mensaje si no hay eventos #}
+            <div class="col-12">
+                <p class="text-center text-muted">No hay eventos disponibles por el momento.</p>
+            </div>
         {% endfor %}
 
     </div>

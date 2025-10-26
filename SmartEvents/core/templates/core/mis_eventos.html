@@ -1,0 +1,63 @@
+{% extends 'core/base.html' %}
+{% load static %} {# Es buena práctica incluirlo aunque heredes #}
+
+{% block title %}Mis Eventos - SmartEvents{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2 class="mb-4">Mis Eventos Inscritos</h2>
+
+    {# Bloque para mostrar mensajes (útil si añades anulación) #}
+    {% if messages %}
+        <div class="row mb-3">
+            <div class="col">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
+    {# Comprueba si hay eventos en la lista pasada por la vista #}
+    {% if eventos %}
+        <div class="list-group shadow-sm">
+            {# Itera sobre cada evento en el que el usuario está inscrito #}
+            {% for evento in eventos %}
+                <div class="list-group-item list-group-item-action flex-column align-items-start mb-2 rounded">
+                    <div class="d-flex w-100 justify-content-between">
+                        {# Título del evento #}
+                        <h5 class="mb-1">{{ evento.titulo }}</h5>
+                        {# Fecha y hora formateada #}
+                        <small class="text-muted">{{ evento.fecha|date:"d M Y, H:i" }} hrs</small>
+                    </div>
+                    <p class="mb-1">
+                        {# Lugar y valor del evento #}
+                        <strong>Lugar:</strong> {{ evento.lugar }} <br>
+                        <strong>Valor:</strong> ${{ evento.valor }}
+                    </p>
+
+                    {# --- Espacio para Futura Funcionalidad: Anular Inscripción --- #}
+                    {# Aquí podrías añadir un formulario similar al de inscripción,
+                       pero que llame a una vista 'anular_inscripcion'
+                    <form action="{% url 'anular_inscripcion' evento.id %}" method="post" class="mt-2">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-outline-danger">Anular Inscripción</button>
+                    </form>
+                     #}
+                    {# --- Fin Espacio Anular Inscripción --- #}
+
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        {# Mensaje si no hay eventos inscritos #}
+        <div class="alert alert-info" role="alert">
+            Aún no te has inscrito a ningún evento.
+        </div>
+        <a href="{% url 'eventos' %}" class="btn btn-primary">Ver eventos disponibles</a>
+    {% endif %}
+</div>
+{% endblock %}
