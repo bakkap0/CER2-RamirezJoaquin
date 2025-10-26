@@ -1,0 +1,29 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Eventos - SmartEvents{% endblock %}
+
+{% block content %}
+<section id="Eventos" class="row">
+    <div class="row row-cols-1 row-cols-md-3 g-3">
+
+        {% for evento in eventos %}
+        <div class="col">
+            <div class="card h-100">
+                <img src="{{ evento.imagen.url }}" class="card-img-top" alt="{{ evento.titulo }}">
+                <div class="card-body">
+                    <a href="#" class="btn btn-primary">Inscribirse</a>
+                </div>
+                <div class="card-footer">
+                    <div class="contador-evento" 
+                         data-fecha-evento="{{ evento.fecha_hora|date:'c' }}">
+                        Cargando contador...
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+    </div>
+</section>
+{% endblock %}

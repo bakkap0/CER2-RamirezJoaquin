@@ -1,0 +1,42 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Inicio - SmartEvents{% endblock %}
+
+
+{% block content %}
+<section id="hero" class="row align-items-center">
+
+    {% if evento_destacado %}
+
+        <div id="contenido" class="col-md-6 p-4">
+            <h2>Tu próximo evento</h2>
+            
+            <p>{{ evento_destacado.titulo }}</p>
+            
+            <div class="contador-evento" 
+                 data-fecha-evento="{{ evento_destacado.fecha_hora|date:'c' }}">
+                Cargando...
+            </div>
+            
+            <a href="{% url 'eventos' %}" class="btn btn-primary mt-3">Ver todos los eventos</a>
+        </div>
+
+        <div class="col-md-6 text-center">
+            <img src="{{ evento_destacado.imagen.url }}" 
+                 alt="{{ evento_destacado.titulo }}" 
+                 class="img-fluid rounded">
+        </div>
+
+    {% else %}
+
+        <div class="col-12 text-center p-5">
+            <h2>Bienvenido a Smart Events</h2>
+            <p>Aún no tenemos eventos próximos. ¡Vuelve pronto!</p>
+            <a href="{% url 'eventos' %}" class="btn btn-primary mt-3">Ver eventos pasados</a>
+        </div>
+
+    {% endif %}
+
+</section>
+{% endblock %}
