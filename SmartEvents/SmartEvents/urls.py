@@ -17,6 +17,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from core import views
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('', views.home, name="index"),
@@ -27,4 +29,8 @@ urlpatterns = [
     path('login/', views.login_view, name="login"),
     path('logout/', views.logout_view, name="logout"),
     path('mis_eventos/', views.mis_eventos, name= "mis_eventos"),
+    path('inscribir/<int:evento_id>/', views.inscribir_evento, name="inscribir_evento"),
+    path('anular/<int:evento_id>/', views.anular_inscripcion, name="anular_inscripcion"),
 ]
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -39,15 +39,12 @@
                         <strong>Valor:</strong> ${{ evento.valor }}
                     </p>
 
-                    {# --- Espacio para Futura Funcionalidad: Anular Inscripción --- #}
-                    {# Aquí podrías añadir un formulario similar al de inscripción,
-                       pero que llame a una vista 'anular_inscripcion'
+                    {# --- INICIO: Formulario para Anular Inscripción --- #}
                     <form action="{% url 'anular_inscripcion' evento.id %}" method="post" class="mt-2">
                         {% csrf_token %}
                         <button type="submit" class="btn btn-sm btn-outline-danger">Anular Inscripción</button>
                     </form>
-                     #}
-                    {# --- Fin Espacio Anular Inscripción --- #}
+                    {# --- FIN: Formulario Anular Inscripción --- #}
 
                 </div>
             {% endfor %}
