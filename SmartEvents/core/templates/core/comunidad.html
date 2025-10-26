@@ -1,60 +1,74 @@
+{% extends 'core/base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SmartEvents</title>
-    <link rel="stylesheet" href="{% static 'core/css/bootstrap.css' %}">
-    <link rel="stylesheet" href="{% static 'core/css/estilos.css' %}">
-</head>
 
-<body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark" id="navbar">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="index.html">Smart Events</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
-                aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-                <div class="navbar-nav ms-auto">
-                    <a class="nav-link" href="index.html">Inicio</a>
-                    <a class="nav-link" href="eventos.html">Eventos</a>
-                    <a class="nav-link" href="comunidad.html">Comunidad</a>
-                </div>
-            </div>
-        </div>
-    </nav>
-    <div class="container-fluid" id="comunidad">
-        <div id="com">
-            <section id="fondo" class="row">
-                <h2>Comentarios</h2>
+{% block title %}Comunidad - SmartEvents{% endblock %}
 
-                <div class="col-12 md-3 " id="nombreBox">
-                    <label for="nombreInput" class="form-label">Nombre</label>
-                    <input class="form-control" id="nombreInput" />
-                </div>
+{% block content %}
+<div class="container-fluid d-flex justify-content-center align-items-center min-vh-100" id="comunidad-bg" style="background-image: url('{% static 'core/imagenes/fondo.png' %}'); background-size: cover; background-position: center;">
+    <div id="com" class="my-4 bg-dark text-light p-4 rounded" style="width: 90%; max-width: 600px;">
 
-                <div class="col-12 md-3" id="textoBox">
-                    <label for="comentario" class="form-label">Comentario</label>
-                    <textarea class="form-control" id="comentario"></textarea>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
+            {% endfor %}
+        {% endif %}
 
-                <div class="col-12">
-                    <button id="publicarBtn" class="btn btn-primary mt-2">Publicar</button>
-                </div>
+        {% if user.is_authenticated %}
+            <section id="formulario-comentario" class="mb-4 p-3 rounded" style="background-color: #1d2633;">
+                <h2 class="text-center mb-3">Deja tu Comentario</h2>
+                <form method="post" action="{% url 'comunidad' %}">
+                    {% csrf_token %}
+
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {% for error in form.non_field_errors %}<p>{{ error }}</p>{% endfor %}
+                        </div>
+                    {% endif %}
+
+
+                    <div class="mb-3" id="textoBox">
+                        <label for="{{ form.texto.id_for_label }}" class="form-label">{{ form.texto.label }}</label>
+                        {{ form.texto }}
+                        {% if form.texto.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.texto.errors %}<p>{{ error }}</p>{% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="text-center">
+                        <button id="publicarBtn" type="submit" class="btn btn-primary mt-2">Publicar</button>
+                    </div>
+                </form>
             </section>
-
-
-            <div id="listaComentarios">
-                <h4>Comentarios publicados</h4>
-                <ul class="list-group" id="comentariosUl"></ul>
+        {% else %}
+            <div class="alert alert-info text-center">
+                Debes <a href="{% url 'login' %}?next={{ request.path }}">iniciar sesión</a> para poder publicar comentarios.
             </div>
+        {% endif %}
+
+
+        <div id="listaComentarios">
+            <h4 class="mb-3">Comentarios publicados</h4>
+            <ul class="list-group" id="comentariosUl">
+                {% for comentario in comentarios %}
+                    <li class="list-group-item mb-2 bg-light text-dark">
+                        <div class="d-flex justify-content-between align-items-baseline mb-1">
+                            <strong>
+                                {{ comentario.usuario.username }}
+                            </strong>
+                            <small class="text-muted">{{ comentario.fecha_creacion|date:"d M Y, H:i" }}</small>
+                        </div>
+                        <div>{{ comentario.texto|linebreaksbr }}</div>
+                    </li>
+                {% empty %}
+                    <li class="list-group-item">Aún no hay comentarios. ¡Sé el primero en publicar!</li>
+                {% endfor %}
+            </ul>
         </div>
     </div>
-    <script src="{% static 'core/js/bootstrap.bundle.min.js' %}"></script>
-    <script src="{% static 'core/js/comunidad.js' %}"></script>
-</body>
-
-</html>
+</div>
+{% endblock %}

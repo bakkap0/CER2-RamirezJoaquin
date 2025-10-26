@@ -1,17 +1,18 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+
     <title>{% block title %}SmartEvents{% endblock %}</title>
-    
+
+ 
     <link rel="stylesheet" href="{% static 'core/css/bootstrap.css' %}">
     <link rel="stylesheet" href="{% static 'core/css/estilos.css' %}">
 </head>
 <body>
-    
+
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark" id="navbar">
         <div class="container-fluid">
             <a class="navbar-brand" href="{% url 'index' %}">Smart Events</a>
@@ -24,33 +25,37 @@
                 <div class="navbar-nav ms-auto">
                     <a class="nav-link" href="{% url 'index' %}">Inicio</a>
                     <a class="nav-link" href="{% url 'eventos' %}">Eventos</a>
-                    <a class="nav-link" href="{% url 'comunidad' %}">Comunidad</a>
-                    
-                    {% if user.is_authenticated %}
-                        
-                        <a class="nav-link" href="#">Mis Eventos</a> 
-                        
-                        <a class="nav-link" href="#">Cerrar Sesión</a>
-                    
-                    {% else %}
-                        
-                        <a class="nav-link" href="#">Iniciar Sesión</a>
+                   
 
-                        <a class="nav-link" href="#">Registrarse</a>
+                    {% if user.is_authenticated %}
+
+                        <a class="nav-link" href="#">Mis Eventos</a>
+                        
+                        <span class="navbar-text text-light mx-2">
+                            Hola, {{ user.username }}
+                        </span>
+                        <a class="nav-link" href="{% url 'logout' %}">Cerrar Sesión</a>
+
+                    {% else %}
+                        {# Inicio de Sesión y Registro #}
+                        <a class="nav-link" href="">Iniciar Sesión</a>
+                        <a class="nav-link" href="{% url 'registro' %}">Registrarse</a> {# Usando 'register' como nombre de URL #}
 
                     {% endif %}
-
                 </div>
             </div>
         </div>
     </nav>
 
-    <div class="container-fluid">
+    <div class="container-fluid p-0"> 
         {% block content %}
-        {% endblock %}
+
+
     </div>
 
     <script src="{% static 'core/js/bootstrap.bundle.min.js' %}"></script>
     <script src ="{% static 'core/js/eventos.js' %}"></script>
+
+    {% endblock %}
 </body>
 </html>

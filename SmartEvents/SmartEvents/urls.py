@@ -19,9 +19,10 @@ from django.urls import path
 from core import views
 
 urlpatterns = [
-    path('', views.home, name="Inicio"),
-    path('comunidad/', views.comunidad, name="comunidad"),
+    path('', views.home, name="index"),
+    #path('comunidad/', views.comunidad, name="comunidad"),
     path('eventos/', views.eventos, name = "eventos" ),
     path('admin/', admin.site.urls),
+    path('registro/',views.registro, name= "registro")
     
 ]
