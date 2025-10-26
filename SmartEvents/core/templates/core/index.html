@@ -10,21 +10,27 @@
     {% if evento_destacado %}
 
         <div id="contenido" class="col-md-6 p-4">
-            <h2>Tu próximo evento</h2>
-            
+            {# --- INICIO: Título dinámico --- #}
+            {% if request.user.is_authenticated and request.user in evento_destacado.asistentes.all %}
+                <h2>Tu próximo evento inscrito</h2>
+            {% else %}
+                <h2>Próximo evento destacado</h2>
+            {% endif %}
+            {# --- FIN: Título dinámico --- #}
+
             <p>{{ evento_destacado.titulo }}</p>
-            
-            <div class="contador-evento" 
+
+            <div class="contador-evento"
                  data-fecha-evento="{{ evento_destacado.fecha|date:'c' }}">
                 Cargando...
             </div>
-            
+
             <a href="{% url 'eventos' %}" class="btn btn-primary mt-3">Ver todos los eventos</a>
         </div>
 
         <div class="col-md-6 text-center">
-            <img src="{{ evento_destacado.imagen.url }}" 
-                 alt="{{ evento_destacado.titulo }}" 
+            <img src="{{ evento_destacado.imagen.url }}"
+                 alt="{{ evento_destacado.titulo }}"
                  class="img-fluid rounded">
         </div>
 

@@ -10,9 +10,22 @@ from .models import Evento
 from django.utils import timezone
 
 def home(request):
-    evento_destacado = Evento.objects.filter(fecha__gte=timezone.now()).order_by('fecha').first() 
+    evento_destacado = None 
+
+    if request.user.is_authenticated:
+        evento_destacado = Evento.objects.filter(
+            fecha__gte=timezone.now(),  
+            asistentes=request.user     
+        ).order_by('fecha').first()     
+
+    if not evento_destacado:
+        evento_destacado = Evento.objects.filter(
+            fecha__gte=timezone.now()  
+        ).order_by('fecha').first()   
+
     context = {'evento_destacado': evento_destacado}
-    return render(request, 'core/index.html',context) 
+    return render(request, 'core/index.html', context)
+
 
 def eventos(request):
     lista_eventos = Evento.objects.all().order_by('fecha') 
