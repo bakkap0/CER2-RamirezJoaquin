@@ -46,7 +46,7 @@
             </section>
         {% else %}
             <div class="alert alert-info text-center">
-                Debes <a href="{% url 'login' %}?next={{ request.path }}">iniciar sesión</a> para poder publicar comentarios.
+                 <a href="{% url 'login' %}?next={{ request.path }}">iniciar sesión</a> 
             </div>
         {% endif %}
 

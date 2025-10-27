@@ -7,9 +7,7 @@
   color: #F5F5F5;
   z-index: 1030;
 }
-body{
-  background-color: #0a192f;
-}
+
 #hero {
   min-height: 100vh;
   background-image: url("../imagenes/fondo.png");
