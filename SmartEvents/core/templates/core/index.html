@@ -10,13 +10,13 @@
     {% if evento_destacado %}
 
         <div id="contenido" class="col-md-6 p-4">
-            {# --- INICIO: Título dinámico --- #}
+          
             {% if request.user.is_authenticated and request.user in evento_destacado.asistentes.all %}
                 <h2>Tu próximo evento inscrito</h2>
             {% else %}
                 <h2>Próximo evento destacado</h2>
             {% endif %}
-            {# --- FIN: Título dinámico --- #}
+         
 
             <p>{{ evento_destacado.titulo }}</p>
 
